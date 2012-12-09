@@ -1,4 +1,6 @@
 class Client < Ohm::Model
+  include Ohm::Callbacks
+
   attribute :name
   attribute :access_key
   attribute :s3_bucket_name
@@ -12,26 +14,19 @@ class Client < Ohm::Model
   # Indexes
   index :access_key
   index :s3_bucket_name
+
+  # Callbacks
+  before  :validate, :generate_access_key
+  after   :create, :create_bucket_and_add_default_profiles
   
   # Validations
   def validate
+    super # required for before_validate callbacks to work
     assert_present    :name
     assert_present    :access_key
     assert_unique     :access_key
     assert_present    :s3_bucket_name
     assert_format     :s3_bucket_name, /^\S*$/
-  end
-
-  
-  def self.create_with_default_profiles(params)
-    client = create params.merge!(:access_key => generate_access_key)
-    client.perform_post_create_setup if client.valid?
-    return client
-  end
-  
-  def perform_post_create_setup
-    create_s3_bucket
-    add_default_profiles if self.profiles.empty?
   end
    
   def to_json
@@ -50,6 +45,19 @@ class Client < Ohm::Model
   end
 
 private
+  
+  def generate_access_key
+    begin
+      key = generate_random_key
+    end while access_key_exists?(key)
+    self.access_key = key
+  end
+
+  def create_bucket_and_add_default_profiles
+    create_s3_bucket 
+    add_default_profiles
+  end
+  
   def create_s3_bucket
     Store.create_bucket(self.s3_bucket_name)
   end
@@ -60,24 +68,14 @@ private
       profile = Profile.create default_profile.merge(:client_id => self.id)
     end
   end
-  
-  def self.generate_access_key
-    begin
-      key = generate_random_key
-    end while access_key_exists?(key)
-    return key
-  end
 
-  def self.access_key_exists?(key)
-    self.find(:access_key => key).count > 0
+  def access_key_exists?(key)
+    Client.find(:access_key => key).count > 0
   end
 
   # From http://stackoverflow.com/questions/88311/how-best-to-generate-a-random-string-in-ruby
-  def self.generate_random_key(length=15)
+  def generate_random_key(length=15)
     character_set =  [('a'..'z'),(0..9)].map{|i| i.to_a}.flatten
     (0..length).map{ character_set[rand(character_set.length)]  }.join
   end
-  
-  # Protect access to the following class methods
-  private_class_method :generate_access_key, :access_key_exists?, :generate_random_key
 end
