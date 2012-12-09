@@ -16,7 +16,6 @@ require 'json'
 require 'resque'
 require 'aws/s3'
 require 'lib/store/file_store'
-require "ruby-debug"
 require 'aasm'
 
 class Main < Monk::Glue

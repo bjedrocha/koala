@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler'
+
 require "init"
 require 'resque/server'
 
