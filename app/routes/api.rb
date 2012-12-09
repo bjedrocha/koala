@@ -49,4 +49,13 @@ class Main
     encoding = client.video_encodings.find_by_id(params[:encoding_id])
     respond_with_success(:encoding => encoding.to_json)
   end
+
+
+  # Status
+  # ====================================
+
+  get "/api/check" do
+    stats = StatusCheck.get_stats
+    respond_with_success(stats)
+  end
 end
