@@ -1,8 +1,19 @@
+require 'rest_client'
+
 class Notification < Ohm::Model
+  include AASM
+
   attribute :state
   attribute :attempts
   attribute :last_send_at
-  attribute :video_id
+
+  # Association
+  reference :video, Video
+
+  # Validations
+  def validate
+    assert_present  :state
+  end
   
   # AASM
   # ===================
@@ -28,21 +39,6 @@ class Notification < Ohm::Model
   
   aasm_event :fail do
     transitions :to => :failed, :from => [:created, :sending]
-  end
-  
-  
-  # Associations
-  
-  def video
-    @video ||= Video[self.video_id]
-  end
-  
-  
-  # Validations
-  # ====================
-  
-  def validate
-    assert_present  :state
   end
   
   

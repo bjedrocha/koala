@@ -1,4 +1,9 @@
+require 'rvideo'
+require 'RMagick'
+
 class Video < Ohm::Model
+  include AASM
+
   attribute :filename
   attribute :filepath
   attribute :video_codec
@@ -14,9 +19,17 @@ class Video < Ohm::Model
   attribute :fps
   attribute :state
   attribute :error_msg
-  attribute :client_id
-  
   attr_accessor :size, :content_type, :md5
+
+  # Associations
+  reference :client, Client
+  collection :video_encodings, VideoEncoding
+  collection :notifications, Notification
+
+  # Validations
+  def validate
+    assert_present  :state
+  end
   
   
   # AASM 
@@ -58,27 +71,7 @@ class Video < Ohm::Model
   
   aasm_event :fail do
     transitions :to => :failed, :from => [:created, :queued, :processed, :uploaded, :encoded, :complete]
-  end
-  
-  
-  # Associations
-  # ====================
-  
-  set :video_encodings, VideoEncoding
-  set :notifications, Notification
-  
-  def client
-    @client ||= Client[self.client_id]
-  end
-  
-  
-  # Validations
-  # ====================
-  
-  def validate
-    assert_present  :state
-  end
-  
+  end  
   
   # Sets the Resque Queue
   @queue = :videos
@@ -112,7 +105,6 @@ class Video < Ohm::Model
       create params.merge(:state => "created", :client_id => client.id)
     end
 
-    client.videos.add video
     Resque.enqueue(Video, video.id)
     return video
   end
@@ -187,7 +179,6 @@ class Video < Ohm::Model
   
   def create_and_queue_notifications
     notification = Notification.create :state => 'created', :video_id => self.id
-    self.notifications.add notification
     Resque.enqueue(Notification, notification.id)
   end
   
@@ -280,8 +271,6 @@ private
   def create_encodings
     self.client.profiles.each do |profile|
       video_encoding = VideoEncoding.create_for_video_and_profile(self, profile)
-      self.client.video_encodings.add video_encoding
-      self.video_encodings.add video_encoding
     end
   end
     

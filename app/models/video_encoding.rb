@@ -1,12 +1,21 @@
 class VideoEncoding < Ohm::Model
+  include AASM
+  
   attribute :filename
   attribute :filepath
   attribute :state
   attribute :started_encoding_at
   attribute :finished_encoding_at
-  attribute :client_id
-  attribute :profile_id
-  attribute :video_id
+
+  # Associations
+  reference :client, Client
+  reference :profile, Profile
+  reference :video, Video
+
+  # Validations
+  def validate
+    assert_present  :state
+  end
   
   # AASM 
   # ===================
@@ -36,29 +45,6 @@ class VideoEncoding < Ohm::Model
   
   aasm_event :fail do
     transitions :to => :failed, :from => [:created, :queued, :processed, :uploaded, :encoded, :complete]
-  end
-  
-  
-  # Associations
-  # ====================
-
-  def client
-    @client ||= Client[self.client_id]
-  end
-  
-  def profile
-    @profile ||= Profile[self.profile_id]
-  end
-  
-  def video
-    @video ||= Video[self.video_id]
-  end
-  
-  
-  # Validations
-  # ====================
-  def validate
-    assert_present  :state
   end
   
   

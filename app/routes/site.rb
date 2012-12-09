@@ -22,7 +22,8 @@ class Main
   end
   
   post "/clients" do
-    @client = Client.create_with_default_profiles(params[:client])
+    @client = Client.new params[:client]
+    @client.save
     @client.to_json
   end
   

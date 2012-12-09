@@ -10,12 +10,10 @@ class Profile < Ohm::Model
   attribute :height 
   attribute :fps
   attribute :player
-  attribute :client_id 
   attribute :content_type
-  
-  def client
-    @client ||= Client[self.client_id]
-  end
+
+  # Association
+  reference :client, Client
   
   def video_bitrate_in_bits
     self.video_bitrate.to_i * 1024
