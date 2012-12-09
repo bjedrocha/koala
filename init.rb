@@ -23,28 +23,6 @@ class Main < Monk::Glue
   use Rack::Session::Cookie
 end
 
-# Model definitions - defined here so that associations work.
-class Client < Ohm::Model
-end
-
-class Profile < Ohm::Model
-end
-
-class Video < Ohm::Model
-  include AASM
-  require 'rvideo'
-  require 'RMagick'
-end
-
-class VideoEncoding < Ohm::Model
-  include AASM
-end
-
-class Notification < Ohm::Model
-  include AASM
-  require 'rest_client'
-end
-
 # Connect to redis database.
 Ohm.connect(settings(:redis))
 

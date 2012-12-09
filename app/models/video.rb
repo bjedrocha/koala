@@ -1,4 +1,9 @@
+require 'rvideo'
+require 'RMagick'
+
 class Video < Ohm::Model
+  include AASM
+
   attribute :filename
   attribute :filepath
   attribute :video_codec
@@ -14,9 +19,17 @@ class Video < Ohm::Model
   attribute :fps
   attribute :state
   attribute :error_msg
-  attribute :client_id
-  
   attr_accessor :size, :content_type, :md5
+
+  # Associations
+  reference :client, Client
+  set :video_encodings, VideoEncoding
+  set :notifications, Notification
+
+  # Validations
+  def validate
+    assert_present  :state
+  end
   
   
   # AASM 
@@ -58,27 +71,7 @@ class Video < Ohm::Model
   
   aasm_event :fail do
     transitions :to => :failed, :from => [:created, :queued, :processed, :uploaded, :encoded, :complete]
-  end
-  
-  
-  # Associations
-  # ====================
-  
-  set :video_encodings, VideoEncoding
-  set :notifications, Notification
-  
-  def client
-    @client ||= Client[self.client_id]
-  end
-  
-  
-  # Validations
-  # ====================
-  
-  def validate
-    assert_present  :state
-  end
-  
+  end  
   
   # Sets the Resque Queue
   @queue = :videos

@@ -5,9 +5,9 @@ class Client < Ohm::Model
   attribute :notification_url
   
   # Associations
-  set :profiles, Profile
-  set :videos, Video
-  set :video_encodings, VideoEncoding
+  collection :profiles, Profile
+  collection :videos, Video
+  collection :video_encodings, VideoEncoding
   
   # Indexes
   index :access_key
@@ -58,7 +58,6 @@ private
     default_profiles = YAML.load_file(root_path("config", "profiles.yml")).values
     default_profiles.each do |default_profile|
       profile = Profile.create default_profile.merge(:client_id => self.id)
-      self.profiles.add(profile)
     end
   end
   
