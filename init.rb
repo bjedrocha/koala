@@ -10,6 +10,7 @@ end
 
 require "monk/glue"
 require "ohm"
+require "ohm/contrib"
 require "haml"
 require 'yaml'
 require 'json'
