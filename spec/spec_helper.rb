@@ -1,0 +1,42 @@
+ENV['RACK_ENV'] = 'test'
+
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "init"))
+
+require "spec"
+require "rack/test"
+require 'webrat'
+
+begin
+  puts "Connected to Redis #{Ohm.redis.info[:redis_version]} on #{settings(:redis)[:host]}:#{settings(:redis)[:port]}, database #{settings(:redis)[:db]}."
+rescue Errno::ECONNREFUSED
+  puts <<-EOS
+
+    Cannot connect to Redis.
+
+    Make sure Redis is running on #{settings(:redis)[:host]}:#{settings(:redis)[:port]}.
+    This testing suite connects to the database #{settings(:redis)[:db]}.
+
+    To start the server:
+      redis-server config/redis/test.conf
+
+  EOS
+  exit 1
+end
+
+module Koala
+  module SpecMethods
+    def app
+      Main.new
+    end
+  end
+end
+
+Spec::Runner.configure do |config|
+  config.include Rack::Test::Methods
+  config.include Koala::SpecMethods
+  config.include Webrat::Matchers
+  config.mock_with :mocha
+  config.after(:all) do
+    Ohm.flush
+  end
+end
