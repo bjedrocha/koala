@@ -2,5 +2,11 @@
 webrat.log
 db/redis/*
 
+# Ignores generated log files
+log/*.log
+
+# Ignores videos created in the tmp_videos directory
+public/data/tmp_videos/**/*
+
 # Ignores .rvmrc files
 .rvmrc
