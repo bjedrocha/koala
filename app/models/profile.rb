@@ -11,6 +11,7 @@ class Profile < Ohm::Model
   attribute :fps
   attribute :player
   attribute :client_id 
+  attribute :content_type
   
   def client
     @client ||= Client[self.client_id]
