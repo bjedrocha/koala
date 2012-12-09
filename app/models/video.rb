@@ -105,7 +105,6 @@ class Video < Ohm::Model
       create params.merge(:state => "created", :client_id => client.id)
     end
 
-    client.videos.add video
     Resque.enqueue(Video, video.id)
     return video
   end
@@ -180,7 +179,6 @@ class Video < Ohm::Model
   
   def create_and_queue_notifications
     notification = Notification.create :state => 'created', :video_id => self.id
-    self.notifications.add notification
     Resque.enqueue(Notification, notification.id)
   end
   
@@ -273,8 +271,6 @@ private
   def create_encodings
     self.client.profiles.each do |profile|
       video_encoding = VideoEncoding.create_for_video_and_profile(self, profile)
-      self.client.video_encodings.add video_encoding
-      self.video_encodings.add video_encoding
     end
   end
     
