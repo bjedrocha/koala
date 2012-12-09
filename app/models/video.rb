@@ -23,8 +23,8 @@ class Video < Ohm::Model
 
   # Associations
   reference :client, Client
-  set :video_encodings, VideoEncoding
-  set :notifications, Notification
+  collection :video_encodings, VideoEncoding
+  collection :notifications, Notification
 
   # Validations
   def validate
