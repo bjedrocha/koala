@@ -34,6 +34,7 @@ end
 class Video < Ohm::Model
   include AASM
   require 'rvideo'
+  require 'RMagick'
 end
 
 class VideoEncoding < Ohm::Model
