@@ -100,7 +100,7 @@ class VideoEncoding < Ohm::Model
   end
   
   def perform_upload
-    Store.set_to_s3(self.s3_filename, self.filepath, client_s3_bucket)
+    Store.set_to_s3(self.s3_filename, self.filepath, client_s3_bucket, {:content_type => self.profile.content_type})
   end
   
   def perform_cleanup_and_notification
@@ -201,6 +201,8 @@ private
   def self.generate_encoding_filename(original_video_filename, profile_data)
     suffix = profile_data.encoded_filename_suffix
     ext = profile_data.container
-    original_video_filename.gsub(Regexp.new(/#{File.extname(original_video_filename)}\Z/), "") + "_#{suffix}.#{ext}"
+    filename = File.basename(original_video_filename, File.extname(original_video_filename))
+    filename.gsub!(/\W/, "_")
+    filename + "_#{suffix}.#{ext}"
   end
 end
