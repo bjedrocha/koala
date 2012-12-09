@@ -35,9 +35,10 @@ class FileStore
   end
   
   # Store the file to S3
-  def set_to_s3(key, file, bucket)
+  def set_to_s3(key, file, bucket, options={})
     begin
-      S3VideoObject.store(key, File.open(file), bucket, :access => :public_read)
+      options.merge!(:access => :public_read)
+      S3VideoObject.store(key, File.open(file), bucket, options)
     rescue AWS::S3::S3Exception => e
       logger.error(e)
       return false

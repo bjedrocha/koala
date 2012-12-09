@@ -1,26 +1,26 @@
-# profileOne:
-#   title: Flash Video SD
-#   container: flv
-#   encoded_filename_suffix: SD
-#   video_command: ffmpeg -i $input_file$ -ar 22050 -ab $audio_bitrate$ -f flv -b $video_bitrate_in_bits$ -r 24 $resolution_and_padding$ -y $output_file$
-#   video_bitrate: 300
-#   audio_command:
-#   audio_bitrate: 48
-#   width: 320
-#   height: 240
-#   fps: 24
-#   player: flash
-  
-profileTwo:
-  title: Flash Video HD
-  container: flv
-  encoded_filename_suffix: HD
-  video_command: ffmpeg -i $input_file$ -ar 22050 -f flv -r 24 -y $output_file$
-  video_bitrate: 400
+profileOne:
+  title: x264 Video
+  container: mp4
+  encoded_filename_suffix: x264
+  video_command: ffmpeg -i $input_file$ -acodec libfaac -ab 128 -vcodec libx264 -preset fast -crf 22 -threads 0 -y $output_file$
+  video_bitrate:
   audio_command:
-  audio_bitrate: 48
-  width: 480
-  height: 360
+  audio_bitrate:
+  width: 640
+  height: 480
   fps: 24
-  player: flash
-  
+  player: 
+  content_type: video/mp4
+
+profileTwo:
+ title: WebM Video
+ container: webm
+ encoded_filename_suffix: vp8
+ video_command: ffmpeg -i $input_file$ -acodec libvorbis -preset libvpx-720p -y $output_file$
+ video_bitrate:
+ audio_command:
+ audio_bitrate: 160
+ width: 640
+ height: 480
+ fps: 24
+ content_type: video/webm
