@@ -19,7 +19,6 @@ class Client < Ohm::Model
     assert_present    :access_key
     assert_unique     :access_key
     assert_present    :s3_bucket_name
-    assert_unique     :s3_bucket_name
     assert_format     :s3_bucket_name, /^\S*$/
   end
 
@@ -32,7 +31,7 @@ class Client < Ohm::Model
   
   def perform_post_create_setup
     create_s3_bucket
-    add_default_profiles if self.profiles.blank?
+    add_default_profiles if self.profiles.empty?
   end
    
   def to_json
@@ -46,7 +45,6 @@ class Client < Ohm::Model
       e.on [:access_key, :not_present], "Access key must be present"
       e.on [:access_key, :not_unique], "Access key must be unique"
       e.on [:s3_bucket_name, :not_present], "S3 Bucket must be present"
-      e.on [:s3_bucket_name, :not_unique], "S3 Bucket must be unique"
       e.on [:s3_bucket_name, :format], "S3 Bucket name can not contain whitespace"
     end
   end
