@@ -158,6 +158,7 @@ class Video < Ohm::Model
     )
     
     inspector.capture_frame("5%", temp_thumbnail_filepath)
+    resize_thumbnail(temp_thumbnail_filepath)
     self.update(:thumbnail_filepath => temp_thumbnail_filepath)
   end
   
@@ -267,11 +268,13 @@ private
   end
   
   def s3_video_path
-    [settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
+    path = [settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
+    escape_path(path)
   end
   
   def s3_thumbnail_path
-    [settings(:s3_base_url), client_s3_bucket, self.s3_thumbnail_filename].join("/")
+    path = [settings(:s3_base_url), client_s3_bucket, self.s3_thumbnail_filename].join("/")
+    escape_path(path)
   end
   
   def create_encodings
@@ -289,6 +292,20 @@ private
   end
   
   def generate_thumbnail_filename(ext = "jpg")
-    self.basename.gsub(Regexp.new(File.extname(self.filename)), "") << "_thumb" << ".#{ext}"
+    filename = File.basename(self.basename, File.extname(self.filename))
+    filename.gsub!(/\W/, "_")
+    filename + "_thumb.#{ext}"
+  end
+
+  def resize_thumbnail(path_to_thumbnail)
+    thumb = Magick::Image.read(path_to_thumbnail).first
+    thumb.change_geometry!("210x150!") { |cols, rows, img| 
+      img.resize!(cols, rows)
+      img.write(path_to_thumbnail)
+    }
+  end
+
+  def escape_path(path)
+    URI.escape(path).gsub('&',CGI.escape('&')).gsub('+',CGI.escape('+')).gsub('\'', CGI.escape('\''))
   end
 end
