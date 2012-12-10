@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/fmiopensource/aasm.git
+  revision: d5e10fd50be6b4bdbe38beb5c3fe0c6c9920e6e7
+  specs:
+    aasm (2.1.5)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -51,6 +57,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm!
   activesupport (~> 2.3.14)
   aws-s3 (= 0.6.3)
   haml (= 2.2.3)

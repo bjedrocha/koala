@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "aasm", :git => "git://github.com/fmiopensource/aasm.git"
 gem "activesupport", "~> 2.3.14"
 gem "aws-s3", "0.6.3"
 gem "haml", "2.2.3"
