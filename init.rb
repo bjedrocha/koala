@@ -1,12 +1,7 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 
+# TODO: might not be needed
 require "rubygems"
-
-begin
-  require "vendor/dependencies/lib/dependencies"
-rescue LoadError
-  require "dependencies"
-end
 
 require "monk/glue"
 require "ohm"
