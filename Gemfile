@@ -23,6 +23,8 @@ group :development, :test do
 end
 
 group :test do
+  gem "rack-test", "~> 0.6.2"
+  gem "webrat", "~> 0.7.3"
   gem "mocha", "~> 0.9.12"
   gem "nokogiri", "~> 1.5.5"
   gem "rspec", "~> 1.3.2"
