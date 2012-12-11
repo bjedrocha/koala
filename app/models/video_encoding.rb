@@ -140,11 +140,11 @@ class VideoEncoding < Ohm::Model
 private  
 
   def encoding_filepath
-    File.join(settings(:temp_video_filepath), self.video_id, self.filename)
+    File.join(monk_settings(:temp_video_filepath), self.video_id, self.filename)
   end
   
   def s3_path
-    [settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
+    [monk_settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
   end
   
   # http://github.com/newbamboo/panda/blob/sinatra/lib/db/encoding.rb

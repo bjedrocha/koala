@@ -5,10 +5,10 @@ class FileStore
   class FileDoesNotExistError < RuntimeError; end
   
   def initialize
-    raise RuntimeError, "Missing S3 Information in settings.yml" unless settings(:s3_access_key_id) && settings(:s3_secret_access_key)
+    raise RuntimeError, "Missing S3 Information in settings.yml" unless monk_settings(:s3_access_key_id) && monk_settings(:s3_secret_access_key)
     AWS::S3::Base.establish_connection!(
-      :access_key_id     => settings(:s3_access_key_id),
-      :secret_access_key => settings(:s3_secret_access_key),
+      :access_key_id     => monk_settings(:s3_access_key_id),
+      :secret_access_key => monk_settings(:s3_secret_access_key),
       :persistent => false
     )
   end

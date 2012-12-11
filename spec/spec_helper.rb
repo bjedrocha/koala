@@ -7,14 +7,14 @@ require "rack/test"
 require 'webrat'
 
 begin
-  puts "Connected to Redis #{Ohm.redis.info[:redis_version]} on #{settings(:redis)[:host]}:#{settings(:redis)[:port]}, database #{settings(:redis)[:db]}."
+  puts "Connected to Redis #{Ohm.redis.info[:redis_version]} on #{monk_settings(:redis)[:host]}:#{monk_settings(:redis)[:port]}, database #{monk_settings(:redis)[:db]}."
 rescue Errno::ECONNREFUSED
   puts <<-EOS
 
     Cannot connect to Redis.
 
-    Make sure Redis is running on #{settings(:redis)[:host]}:#{settings(:redis)[:port]}.
-    This testing suite connects to the database #{settings(:redis)[:db]}.
+    Make sure Redis is running on #{monk_settings(:redis)[:host]}:#{monk_settings(:redis)[:port]}.
+    This testing suite connects to the database #{monk_settings(:redis)[:db]}.
 
     To start the server:
       redis-server config/redis/test.conf

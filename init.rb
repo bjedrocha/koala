@@ -25,10 +25,10 @@ class Main < Monk::Glue
 end
 
 # Connect to redis database.
-Ohm.connect(settings(:redis))
+Ohm.connect(monk_settings(:redis))
 
 # Setup Resque to connect to redis
-Resque.redis = settings(:resque_redis)
+Resque.redis = monk_settings(:resque_redis)
 
 # Load all application files.
 Dir[root_path("app/**/*.rb")].each do |file|

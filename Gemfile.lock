@@ -11,6 +11,12 @@ GIT
   specs:
     aasm (2.1.5)
 
+GIT
+  remote: git://github.com/monkrb/glue.git
+  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
+  specs:
+    monk-glue (0.0.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -70,6 +76,7 @@ DEPENDENCIES
   haml (= 2.2.3)
   json (~> 1.6.3)
   mocha (~> 0.9.12)
+  monk-glue!
   nokogiri (~> 1.5.5)
   ohm (= 0.0.38)
   ohm-contrib (= 0.0.42)

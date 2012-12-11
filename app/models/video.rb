@@ -247,24 +247,24 @@ class Video < Ohm::Model
 private
 
   def temp_video_filepath
-    directory = File.join(settings(:temp_video_filepath), self.id.to_s)
+    directory = File.join(monk_settings(:temp_video_filepath), self.id.to_s)
     FileUtils.mkdir(directory, :mode => 0777) unless File.directory?(directory)
     File.join(directory, self.basename)
   end
   
   def temp_thumbnail_filepath
-    directory = File.join(settings(:temp_video_filepath), self.id.to_s)
+    directory = File.join(monk_settings(:temp_video_filepath), self.id.to_s)
     FileUtils.mkdir(directory, :mode => 0777) unless File.directory?(directory)
     File.join(directory, self.thumbnail_filename)
   end
   
   def s3_video_path
-    path = [settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
+    path = [monk_settings(:s3_base_url), client_s3_bucket, self.s3_filename].join("/")
     escape_path(path)
   end
   
   def s3_thumbnail_path
-    path = [settings(:s3_base_url), client_s3_bucket, self.s3_thumbnail_filename].join("/")
+    path = [monk_settings(:s3_base_url), client_s3_bucket, self.s3_thumbnail_filename].join("/")
     escape_path(path)
   end
   
