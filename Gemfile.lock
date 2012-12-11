@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/bjedrocha/rvideo.git
+  revision: 2234837223f96b2518c1931ff7fee77886f507a9
+  specs:
+    rvideo (0.9.4)
+      activesupport (>= 2.3.6)
+
+GIT
   remote: git://github.com/fmiopensource/aasm.git
   revision: d5e10fd50be6b4bdbe38beb5c3fe0c6c9920e6e7
   specs:
@@ -72,5 +79,6 @@ DEPENDENCIES
   rmagick (= 2.13.1)
   rspec (~> 1.3.2)
   ruby-debug (~> 0.10.4)
+  rvideo!
   sinatra (~> 0.9.6)
   system_timer (~> 1.2.4)

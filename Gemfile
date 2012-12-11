@@ -11,6 +11,7 @@ gem "rake"
 gem "resque", "~> 1.19.0"
 gem "rest-client", "1.3.1"
 gem "rmagick", "2.13.1"
+gem "rvideo", :git => "git://github.com/bjedrocha/rvideo.git"
 gem "sinatra", "~> 0.9.6"
 
 # Fixes Redis deprecation warnings when running rake tasks
