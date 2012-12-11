@@ -2,13 +2,13 @@
 # Koala Video Server #
 
 * What is it?
-  * Koala is an open-source solution for encoding videos.
+  * Koala is a self-hosted solution for encoding videos.
   * Designed to work with Amazon's EC2 computing and S3 storage platforms.
   * Focused on being fast and scalable    
 * What technologies does it use?
   * Koala is built using [Sinatra](http://www.sinatrarb.com/) and [Redis](http://code.google.com/p/redis/)
   * Computationally intensive tasks are queued in the background and processed using [Resque](http://github.com/defunkt/resque).
-  * `ffmpeg` is used to encode the videos
+  * `ffmpeg` is used to encode the videos via RVideo
 * What features does it currently support?
   * Multiple web-apps(clients)
   * Encoding of videos stored on S3
@@ -33,71 +33,48 @@ There are two ways to encode videos with Koala. The recommended way is to utiliz
 
 ## Installation and Setup
 
-The following describes the steps required to setup Koala on a machine running Ubuntu (tested with 9.04, 9.10, 10.04). The procedure for other distros should be similar.
+The following describes the steps required to setup Koala on a machine running Ubuntu (tested with 9.04, 9.10, 10.04, 12.04). The procedure for other distros should be similar.
 
 ### Install Ruby 
 
-As always, begin with an up-to-date system
+The recommended way to install Ruby is to use [RVM](http://rvm.io). Once RVM is installed, install the latest version of Ruby 1.8.7
 
-    sudo apt-get update
-    sudo apt-get dist-upgrade
+    rvm install ruby-1.8.7
 
-Next, install Ruby 1.8.7 from the repos
+I would also strongly recommend creating a specific gemset where required gems will get installed.
 
-    sudo apt-get install ruby ruby-dev libopenssl-ruby1.8 irb ri rdoc rake
+    rvm gemset create koala
 
-We'll need latest the latest RubyGems
+Then to use
 
-    wget http://production.cf.rubygems.org/rubygems/rubygems-1.3.7.tgz
-    tar xvfz rubygems-1.3.7
-    ruby setup.rb
+    rvm use 1.8.7@koala
 
 ### Install Redis and Resque
  
 Once we have Ruby and friends installed, we need a database for Koala to connect to. Koala relies on Redis to be blazing fast
 
+    mkdir ~/Sources
+    cd ~/Sources
     wget http://redis.googlecode.com/files/redis-1.2.6.tar.gz
-    tar xvfz redis-1.2.6.tar.gz
+    tar xzf redis-1.2.6.tar.gz
     cd redis-1.2.6
     make
+    
+Now we make some symbolic links so the binaries our in our path
 
-Note: the above will need to be done in a folder accessible in your `$PATH`. I usually place it in `/usr/local/bin`
+    sudo ln -s ~/Sources/redis-1.2.6/src/redis-server /usr/local/bin/redis-server
+    sudo ln -s ~/Sources/redis-1.2.6/src/redis-cli /usr/local/bin/redis-cli
+    sudo ln -s ~/Sources/redis-1.2.6/src/redis-benchmark /usr/local/bin/redis-benchmark
 
 To test Redis, type the following in your terminal
 
     redis-server
 
-The above should start the redis-server without any configuration. If you don't see anything displayed or if the system can't find the command, ensure that you installed Redis in a directory listed in your `$PATH`.
+The above should start the redis-server without any configuration.
 
-Once you've installed Redis, install supporting gems
+### Install ffmpeg
 
-    sudo gem install redis redis-namespace json
-
-Koala uses Resque to queue and process the encoding of videos as well as other computationally intensive tasks, we can install it with
-
-    sudo gem install resque
-
-### Install ffmpeg and rVideo
-
-This is probably the most involved and complicated task during the setup - especially if something goes wrong. If you're installing this on Ubuntu then the following should make the process fairly painless.
-
-Begin by installing `ffmpeg` according to [this guide](http://ubuntuforums.org/showthread.php?t=786095) (specific to Ubuntu)
-
-Once installation completes, install the rVideo gem
-
-    sudo gem install rvideo
-
-There is a small error in this version of the gem. To fix, find the path to where the rvideo gem is installed and change the following (found under `rvideo-0.9.3/lib/rvideo/inspector.rb`)
-
-    metadata = /(Input \#.*)\nMust/m.match(@raw_response)
-
-change to
-
-    metadata = /(Input \#.*)\n.+\n\Z/m.match(@raw_response) 
-
-### Install miscellaneous dependencies
-
-    sudo gem install aws-s3
+This is probably the most involved and complicated task during the setup - especially if something goes wrong. If you're installing this on Ubuntu then [this guide](https://ffmpeg.org/trac/ffmpeg/wiki/UbuntuCompilationGuide) should make the process fairly painless.
 
 ### Install and setup Nginx with Passenger (optional)
 
@@ -136,6 +113,11 @@ Koala includes a sample `nginx.conf` you can copy and use, it has the configurat
 ## Running Koala ##
 
 Once you have met the installation requirements, follow these steps to get Koala up and running
+
+0. Clone the repository and run a `bundle install` to get all the required gems.
+
+> There are at present three gems which are sourced from git. Although Bundler makes this easy it should be noted that these
+three gems do not get installed with the rest of your rubygems. They only get installed into the bundle. This means that when starting things like resque workers or irb, you'll have to prepend with `bundle exec`.
 
 1. Edit the `config/settings.yml` file to include your S3 credentials and other settings pertaining to your environment
 2. Koala comes with two Redis configuration files (one for development, the other for testing). You can start the redis server with the following
