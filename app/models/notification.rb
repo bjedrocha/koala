@@ -97,6 +97,6 @@ class Notification < Ohm::Model
 private
   def max_attempts_not_reached?
     return true if self.attempts.blank?
-    self.attempts.to_i < settings(:max_notification_attempts)
+    self.attempts.to_i < monk_settings(:max_notification_attempts)
   end
 end

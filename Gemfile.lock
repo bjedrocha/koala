@@ -1,3 +1,22 @@
+GIT
+  remote: git://github.com/bjedrocha/rvideo.git
+  revision: 2234837223f96b2518c1931ff7fee77886f507a9
+  specs:
+    rvideo (0.9.4)
+      activesupport (>= 2.3.6)
+
+GIT
+  remote: git://github.com/fmiopensource/aasm.git
+  revision: d5e10fd50be6b4bdbe38beb5c3fe0c6c9920e6e7
+  specs:
+    aasm (2.1.5)
+
+GIT
+  remote: git://github.com/monkrb/glue.git
+  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
+  specs:
+    monk-glue (0.0.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -21,6 +40,8 @@ GEM
     ohm-contrib (0.0.42)
       ohm
     rack (1.4.1)
+    rack-test (0.6.2)
+      rack (>= 1.0)
     rake (10.0.2)
     rbx-require-relative (0.0.9)
     redis (2.2.2)
@@ -45,25 +66,34 @@ GEM
     system_timer (1.2.4)
     vegas (0.1.11)
       rack (>= 1.0.0)
+    webrat (0.7.3)
+      nokogiri (>= 1.2.0)
+      rack (>= 1.0)
+      rack-test (>= 0.5.3)
     xml-simple (1.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm!
   activesupport (~> 2.3.14)
   aws-s3 (= 0.6.3)
   haml (= 2.2.3)
   json (~> 1.6.3)
   mocha (~> 0.9.12)
+  monk-glue!
   nokogiri (~> 1.5.5)
   ohm (= 0.0.38)
   ohm-contrib (= 0.0.42)
+  rack-test (~> 0.6.2)
   rake
   resque (~> 1.19.0)
   rest-client (= 1.3.1)
   rmagick (= 2.13.1)
   rspec (~> 1.3.2)
   ruby-debug (~> 0.10.4)
+  rvideo!
   sinatra (~> 0.9.6)
   system_timer (~> 1.2.4)
+  webrat (~> 0.7.3)

@@ -1,12 +1,7 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 
+# TODO: might not be needed
 require "rubygems"
-
-begin
-  require "vendor/dependencies/lib/dependencies"
-rescue LoadError
-  require "dependencies"
-end
 
 require "monk/glue"
 require "ohm"
@@ -25,10 +20,10 @@ class Main < Monk::Glue
 end
 
 # Connect to redis database.
-Ohm.connect(settings(:redis))
+Ohm.connect(monk_settings(:redis))
 
 # Setup Resque to connect to redis
-Resque.redis = settings(:resque_redis)
+Resque.redis = monk_settings(:resque_redis)
 
 # Load all application files.
 Dir[root_path("app/**/*.rb")].each do |file|
